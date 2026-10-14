@@ -7,6 +7,8 @@ Free, private push-to-talk dictation for Apple Silicon Macs: a DIY alternative t
 **Hold Right Option → speak → release.** Your words are transcribed on-device, tidied by a
 local AI model, and pasted wherever your cursor is. Nothing leaves your Mac.
 
+![Hazz Wispr dashboard showing live stats and the last dictation](docs/dashboard.webp)
+
 ## Features
 
 - **Menu bar app.** Starts at login, with no Dock icon or Terminal window. The icon turns orange while listening.
