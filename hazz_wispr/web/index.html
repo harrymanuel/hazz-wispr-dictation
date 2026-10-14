@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hazz Wispr</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff5a36'/%3E%3Cstop offset='1' stop-color='%23ff2e63'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M18 26v12M25 20v24M32 14v36M39 20v24M46 26v12' stroke='%23111' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="aura" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="topbar">
+    <a class="brand" href="#overview" aria-label="Hazz Wispr home">
+      <span class="brand-mark" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i>
+      </span>
+      Hazz Wispr
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#overview">Overview</a>
+      <a href="#dictionary">Dictionary</a>
+      <a href="#history">History</a>
+      <a href="#settings">Settings</a>
+    </nav>
+    <div class="status" id="status" data-state="loading" role="status" aria-live="polite">
+      <span class="status-dot"></span><span class="status-label">Connecting…</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Overview -->
+    <section class="view" id="view-overview" hidden>
+      <div class="hero">
+        <p class="eyebrow">Local dictation<br>Private by design</p>
+        <h1 class="display">Hazz<br>Wispr</h1>
+      </div>
+
+      <div class="band">
+        <div class="band-copy">
+          <p class="band-kicker">How it works</p>
+          <p class="band-title">Hold <kbd>⌥</kbd> Right&nbsp;Option. Speak. Let&nbsp;go.</p>
+        </div>
+        <div class="band-last">
+          <p class="band-kicker">Last dictation</p>
+          <p class="band-quote" id="last-dictation">Nothing yet. Give it a go.</p>
+        </div>
+      </div>
+
+      <div class="stats" id="stats">
+        <div class="stat"><p class="stat-value" data-stat="words">–</p><p class="stat-label">Words dictated</p></div>
+        <div class="stat"><p class="stat-value" data-stat="dictations">–</p><p class="stat-label">Dictations</p></div>
+        <div class="stat"><p class="stat-value" data-stat="saved">–</p><p class="stat-label">Time saved vs typing</p></div>
+        <div class="stat"><p class="stat-value" data-stat="latency">–</p><p class="stat-label">Average turnaround</p></div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Recent</h2>
+            <a class="link" href="#history">All history →</a>
+          </div>
+          <ul class="feed" id="recent"></ul>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">Where you dictate</h2></div>
+          <ul class="bars" id="top-apps"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dictionary -->
+    <section class="view" id="view-dictionary" hidden>
+      <div class="page-head">
+        <h1 class="title">Dictionary</h1>
+        <p class="lede">Teach Hazz Wispr how you spell things. Words help the speech model recognise names and jargon. Replacements are applied to every dictation, word for word.</p>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Words</h2>
+            <span class="count" id="word-count">0</span>
+          </div>
+          <p class="hint">Names, brands, jargon. Spelled exactly how you like them.</p>
+          <form class="inline-form" id="word-form" autocomplete="off">
+            <input class="input" name="term" placeholder="e.g. Siobhan, Kubernetes" maxlength="80" required aria-label="New word">
+            <button class="btn btn-primary" type="submit">Add</button>
+          </form>
+          <ul class="chips" id="words"></ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Replacements</h2>
+            <span class="count" id="rep-count">0</span>
+          </div>
+          <p class="hint">When the output says one thing, write another.</p>
+          <form class="rep-form" id="rep-form" autocomplete="off">
+            <input class="input" name="source" placeholder="When I say…" maxlength="80" required aria-label="Replace this">
+            <span class="arrow" aria-hidden="true">→</span>
+            <input class="input" name="target" placeholder="Write…" maxlength="200" required aria-label="With this">
+            <button class="btn btn-primary" type="submit">Add</button>
+          </form>
+          <ul class="reps" id="replacements"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="view" id="view-history" hidden>
+      <div class="page-head">
+        <h1 class="title">History</h1>
+        <p class="lede">Everything you've dictated, stored only on this Mac. Turn it off any time in Settings.</p>
+      </div>
+      <div class="toolbar">
+        <input class="input search" id="history-search" type="search" placeholder="Search dictations or apps" aria-label="Search history">
+        <button class="btn btn-ghost" id="clear-history" type="button">Clear all</button>
+      </div>
+      <ul class="history" id="history"></ul>
+    </section>
+
+    <!-- Settings -->
+    <section class="view" id="view-settings" hidden>
+      <div class="page-head">
+        <h1 class="title">Settings</h1>
+        <p class="lede">Changes apply to your next dictation.</p>
+      </div>
+      <div class="card settings">
+        <div class="setting">
+          <div>
+            <p class="setting-name">AI cleanup</p>
+            <p class="setting-desc">Removes filler words, resolves self-corrections and fixes punctuation with a local model via Ollama.</p>
+          </div>
+          <label class="switch"><input type="checkbox" data-setting="cleanup"><span></span></label>
+        </div>
+        <div class="setting">
+          <div>
+            <p class="setting-name">Cleanup model</p>
+            <p class="setting-desc" id="model-desc">Installed Ollama models.</p>
+          </div>
+          <select class="input select" id="model-select" aria-label="Cleanup model"></select>
+        </div>
+        <div class="setting">
+          <div>
+            <p class="setting-name">Save history</p>
+            <p class="setting-desc">Keep a searchable log of dictations. Stats are kept either way.</p>
+          </div>
+          <label class="switch"><input type="checkbox" data-setting="save_history"><span></span></label>
+        </div>
+        <div class="setting">
+          <div>
+            <p class="setting-name">Start at login</p>
+            <p class="setting-desc" id="login-desc">Open Hazz Wispr in the menu bar when you log in.</p>
+          </div>
+          <label class="switch"><input type="checkbox" data-setting="start_at_login"><span></span></label>
+        </div>
+        <div class="setting">
+          <div>
+            <p class="setting-name">Hotkey</p>
+            <p class="setting-desc">Hold to record, release to paste.</p>
+          </div>
+          <span class="key"><kbd>⌥</kbd> Right Option</span>
+        </div>
+      </div>
+      <p class="privacy-note">Your audio and text never leave this Mac. Data lives in <code>~/Library/Application Support/Hazz Wispr</code>.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Hazz Wispr</span>
+    <span>Whisper large-v3-turbo · Ollama · 100% on-device</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
